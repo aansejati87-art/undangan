@@ -301,6 +301,37 @@
     .gift-card .rek { font-size: 1.4rem; font-weight: 600; letter-spacing: 2px; margin: 10px 0; }
     .btn-copy { background: #111; color: #fff; border: 0; padding: 9px 22px; border-radius: 25px; cursor: pointer; font: inherit; font-size: .85rem; }
 
+
+    /* ===== Ucapan & Doa ===== */
+    .ucapan { background: #0a0a0a; padding: 70px 20px 40px; text-align: center; border-top: 1px solid rgba(255,255,255,.08); }
+    .ucapan .sub { max-width: 420px; margin: -8px auto 24px; font-size: .88rem; color: var(--muted); }
+    .wish-form { max-width: 420px; margin: 0 auto 30px; display: flex; flex-direction: column; gap: 12px; text-align: left; }
+    .wish-form input, .wish-form select, .wish-form textarea { width: 100%; background: transparent; border: 1px solid var(--line); color: #fff; border-radius: 10px; padding: 12px 14px; font: inherit; font-size: .9rem; outline: none; transition: border-color .25s; }
+    .wish-form input:focus, .wish-form select:focus, .wish-form textarea:focus { border-color: #fff; }
+    .wish-form select option { color: #000; }
+    .wish-form textarea { resize: vertical; min-height: 96px; }
+    .wish-form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+    .wish-count { font-size: .75rem; color: var(--muted); text-align: right; margin-top: -6px; }
+    .wish-send { background: #fff; color: #000; border: 0; border-radius: 25px; padding: 12px 22px; font: inherit; font-weight: 500; font-size: .9rem; letter-spacing: 1px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: opacity .2s; }
+    .wish-send:disabled { opacity: .5; cursor: default; }
+    .wish-msg { font-size: .82rem; min-height: 1.2em; text-align: center; color: #86efac; }
+    .wish-msg.err { color: #fca5a5; }
+    .wish-note { font-size: .72rem; color: #fcd34d; text-align: center; }
+    .wish-head { max-width: 420px; margin: 0 auto 10px; display: flex; justify-content: space-between; align-items: baseline; font-size: .82rem; color: var(--muted); text-align: left; }
+    .wish-list { max-width: 420px; margin: 0 auto; max-height: 460px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 4px; text-align: left; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.3) transparent; }
+    .wish-list::-webkit-scrollbar { width: 5px; }
+    .wish-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,.3); border-radius: 4px; }
+    .wish-item { border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.03); border-radius: 12px; padding: 12px 14px; }
+    .wish-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .wish-name { font-weight: 600; font-size: .92rem; word-break: break-word; }
+    .wish-time { font-size: .7rem; color: var(--muted); white-space: nowrap; }
+    .wish-badge { display: inline-block; font-size: .68rem; padding: 1px 9px; border-radius: 20px; border: 1px solid rgba(255,255,255,.25); color: #e5e5e5; margin-bottom: 6px; }
+    .wish-badge.y { border-color: #4ade80; color: #86efac; }
+    .wish-badge.n { border-color: #f87171; color: #fca5a5; }
+    .wish-text { font-size: .88rem; color: #e8e8e8; white-space: pre-wrap; word-break: break-word; }
+    .wish-empty { text-align: center; color: var(--muted); font-size: .85rem; padding: 18px 0; }
+    .wish-more { margin: 12px auto 0; display: none; background: transparent; color: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 8px 18px; font: inherit; font-size: .82rem; cursor: pointer; }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
     }
@@ -435,6 +466,30 @@
       </div>
     </section>
 
+    <!-- UCAPAN & DOA -->
+    <section class="ucapan" id="ucapan">
+      <h2 class="section-title">Ucapan &amp; Doa</h2>
+      <p class="sub">Kirimkan ucapan selamat dan doa restu untuk kedua mempelai.</p>
+      <form class="wish-form" id="wishForm" autocomplete="off" novalidate>
+        <input type="text" id="wName" placeholder="Nama Anda" maxlength="60" required>
+        <select id="wHadir">
+          <option value="">Konfirmasi kehadiran (opsional)</option>
+          <option value="Hadir">Hadir</option>
+          <option value="Tidak Hadir">Tidak Hadir</option>
+          <option value="Masih Ragu">Masih Ragu</option>
+        </select>
+        <textarea id="wText" placeholder="Tulis ucapan dan doa untuk kedua mempelai..." maxlength="400" required></textarea>
+        <div class="wish-count"><span id="wCount">0</span>/400</div>
+        <input type="text" id="wHp" class="hp" tabindex="-1" aria-hidden="true" autocomplete="off">
+        <button type="submit" class="wish-send" id="wBtn"><i class="fas fa-paper-plane"></i> KIRIM UCAPAN</button>
+        <div class="wish-msg" id="wMsg" role="status"></div>
+        <div class="wish-note" id="wNote" style="display:none">Mode uji coba: ucapan hanya tersimpan di perangkat ini. Isi konfigurasi Firebase agar tampil untuk semua tamu.</div>
+      </form>
+      <div class="wish-head"><span>Ucapan dari para tamu</span><span id="wTotal"></span></div>
+      <div class="wish-list" id="wishList"></div>
+      <button type="button" class="wish-more" id="wMore">Tampilkan lebih banyak</button>
+    </section>
+
     <!-- THANKS -->
     <section class="footer">
       <div class="footer-thanks">Terima Kasih</div>
@@ -452,6 +507,7 @@
     <a href="#couple"><i class="fas fa-heart"></i></a>
     <a href="#savedate"><i class="fas fa-calendar-days"></i></a>
     <a href="#gallery-section"><i class="fas fa-images"></i></a>
+    <a href="#ucapan"><i class="fas fa-comments"></i></a>
   </nav>
 
   <!-- LIGHTBOX -->
@@ -609,7 +665,7 @@
       // Efek muncul saat scroll
       const map = [
         ['.section-title, .quote, .quote-source, .doa, .undangan-text, .salam, .nama-script, .ortu, .footer p, .footer-thanks, .footer-names, .gift-card', 'rv-up'],
-        ['.countdown, .and-line, .gallery img, .cal, .rsvp, .ornament', 'rv-zoom'],
+        ['.countdown, .and-line, .gallery img, .cal, .rsvp, .ornament, .wish-form', 'rv-zoom'],
         ['.event-card:nth-of-type(even)', 'rv-right'],
         ['.event-card:nth-of-type(odd)', 'rv-left']
       ];
@@ -679,6 +735,158 @@
       au.addEventListener('play', () => $('#music-btn').classList.add('spin'));
       au.addEventListener('pause', () => $('#music-btn').classList.remove('spin'));
     })();
+  </script>
+
+  <script>
+  // ===== Ucapan & Doa (Firebase Firestore) =====
+  (function () {
+    // Tempel konfigurasi dari Firebase Console (Project settings > Your apps > Web app).
+    // Selama kosong, ucapan hanya tersimpan di perangkat pengirim (mode uji coba).
+    var FIREBASE_CONFIG = {
+    apiKey: "AIzaSyBDKx_pUihl7qgeBx1ZwaUSGTr7tN-ZUq8",
+    authDomain: "n-sorry-invitation.firebaseapp.com",
+    projectId: "n-sorry-invitation",
+    storageBucket: "n-sorry-invitation.firebasestorage.app",
+    messagingSenderId: "1050957938903",
+    appId: "1:1050957938903:web:185de0d299d04e12c43092",
+    measurementId: "G-10F6MBV9R5"
+    };
+    var KOLEKSI = 'ucapan';
+    var SDK = 'https://www.gstatic.com/firebasejs/10.14.1/';
+
+    var USE_FB = !!(FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.projectId);
+    var LS = 'ucapan.v1', LAST = 'ucapan.last', COOLDOWN = 30000, PAGE = 8;
+    var $ = function (id) { return document.getElementById(id); };
+    var items = [], shown = PAGE, fb = null;
+
+    function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+    function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+    function ago(t) {
+      var d = new Date(t).getTime();
+      if (!d) return 'baru saja';
+      var s = Math.max(0, (Date.now() - d) / 1000);
+      if (s < 60) return 'baru saja';
+      if (s < 3600) return Math.floor(s / 60) + ' menit lalu';
+      if (s < 86400) return Math.floor(s / 3600) + ' jam lalu';
+      if (s < 86400 * 30) return Math.floor(s / 86400) + ' hari lalu';
+      return new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function render() {
+      var box = $('wishList');
+      box.innerHTML = '';
+      $('wTotal').textContent = items.length ? items.length + ' ucapan' : '';
+      if (!items.length) {
+        var e = document.createElement('div');
+        e.className = 'wish-empty';
+        e.textContent = 'Jadilah yang pertama memberikan ucapan.';
+        box.appendChild(e);
+      }
+      items.slice(0, shown).forEach(function (it) {
+        var card = document.createElement('div'); card.className = 'wish-item';
+        var top = document.createElement('div'); top.className = 'wish-top';
+        var nm = document.createElement('span'); nm.className = 'wish-name'; nm.textContent = it.nama;
+        var tm = document.createElement('span'); tm.className = 'wish-time'; tm.textContent = ago(it.waktu);
+        top.appendChild(nm); top.appendChild(tm); card.appendChild(top);
+        if (it.hadir) {
+          var b = document.createElement('span');
+          b.className = 'wish-badge' + (it.hadir === 'Hadir' ? ' y' : it.hadir === 'Tidak Hadir' ? ' n' : '');
+          b.textContent = it.hadir; card.appendChild(b);
+        }
+        var tx = document.createElement('div'); tx.className = 'wish-text'; tx.textContent = it.pesan;
+        card.appendChild(tx); box.appendChild(card);
+      });
+      $('wMore').style.display = items.length > shown ? 'block' : 'none';
+    }
+
+    function say(text, err) {
+      var m = $('wMsg'); m.textContent = text || ''; m.className = 'wish-msg' + (err ? ' err' : '');
+    }
+
+    function loadLocal() {
+      $('wNote').style.display = '';
+      try { items = JSON.parse(lsGet(LS) || '[]'); } catch (e) { items = []; }
+      render();
+    }
+
+    function load() {
+      if (!USE_FB) { loadLocal(); return; }
+      Promise.all([
+        import(SDK + 'firebase-app.js'),
+        import(SDK + 'firebase-firestore.js')
+      ]).then(function (m) {
+        var app = m[0].initializeApp(FIREBASE_CONFIG);
+        var f = m[1];
+        var db = f.getFirestore(app);
+        fb = {
+          add: function (d) {
+            return f.addDoc(f.collection(db, KOLEKSI), {
+              nama: d.nama, hadir: d.hadir, pesan: d.pesan, waktu: f.serverTimestamp()
+            });
+          }
+        };
+        var q = f.query(f.collection(db, KOLEKSI), f.orderBy('waktu', 'desc'), f.limit(300));
+        f.onSnapshot(q, function (snap) {
+          items = snap.docs.map(function (d) {
+            var x = d.data({ serverTimestamps: 'estimate' });
+            return {
+              nama: x.nama, hadir: x.hadir, pesan: x.pesan,
+              waktu: x.waktu && x.waktu.toDate ? x.waktu.toDate().toISOString() : null
+            };
+          });
+          render();
+        }, function () { render(); say('Daftar ucapan belum bisa dimuat.', true); });
+      }).catch(function () { render(); say('Layanan ucapan belum bisa dihubungi.', true); });
+    }
+
+    // Isi nama otomatis dari link undangan (?to= / ?nama=)
+    try {
+      var q = new URLSearchParams(location.search);
+      var g = q.get('to') || q.get('nama');
+      if (g) $('wName').value = g.slice(0, 60);
+    } catch (e) {}
+
+    $('wText').addEventListener('input', function () { $('wCount').textContent = this.value.length; });
+    $('wMore').addEventListener('click', function () { shown += PAGE; render(); });
+
+    $('wishForm').addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var nama = $('wName').value.trim().replace(/\s+/g, ' ');
+      var pesan = $('wText').value.trim();
+      var hadir = $('wHadir').value;
+      if (nama.length < 2) { say('Mohon isi nama Anda.', true); return; }
+      if (pesan.length < 3) { say('Mohon tulis ucapan Anda.', true); return; }
+      if ($('wHp').value) { say('Terima kasih atas ucapannya!'); return; } // jebakan bot
+      var last = parseInt(lsGet(LAST) || '0', 10);
+      if (Date.now() - last < COOLDOWN) { say('Mohon tunggu sebentar sebelum mengirim lagi.', true); return; }
+
+      var btn = $('wBtn'); btn.disabled = true; say('Mengirim...');
+
+      function done() {
+        lsSet(LAST, String(Date.now()));
+        $('wText').value = ''; $('wCount').textContent = '0';
+        say('Terima kasih, ucapan Anda sudah terkirim.');
+        btn.disabled = false;
+      }
+      function fail() {
+        say('Gagal mengirim. Periksa koneksi lalu coba lagi.', true); btn.disabled = false;
+      }
+
+      if (!USE_FB) {
+        items.unshift({ nama: nama, hadir: hadir, pesan: pesan, waktu: new Date().toISOString() });
+        lsSet(LS, JSON.stringify(items.slice(0, 100)));
+        shown = Math.max(shown, PAGE); render(); done(); return;
+      }
+      if (!fb) { fail(); return; }
+      var timeout = new Promise(function (_, rej) { setTimeout(function () { rej(new Error('timeout')); }, 12000); });
+      Promise.race([fb.add({ nama: nama, hadir: hadir, pesan: pesan }), timeout]).then(function () {
+        shown = Math.max(shown, PAGE); done();
+      }).catch(fail);
+    });
+
+    load();
+  })();
   </script>
 </body>
 </html>
